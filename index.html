@@ -41,11 +41,12 @@
 
     const cellCount = labels.length;
     const cellSize = 40;
-    const marginTop = 160;
     const marginLeft = 160;
+    const marginTop = 100;
+    const marginBottom = 200;
     const chartSize = cellCount * cellSize;
-    const totalWidth = chartSize + marginLeft;
-    const totalHeight = marginTop + chartSize + 120; // 为下方标签腾出空间
+    const totalWidth = marginLeft + chartSize + 100;
+    const totalHeight = marginTop + chartSize + marginBottom;
 
     const svg = d3.select("#viz")
       .append("svg")
@@ -59,7 +60,7 @@
 
     const colorScale = d3.scaleSequential()
       .domain([0, 1])
-      .interpolator(t => d3.interpolatePlasma(Math.pow(t, 0.4)));  // gamma 调整增强对比
+      .interpolator(t => d3.interpolatePlasma(Math.pow(t, 0.4))); // gamma correction
 
     const radiusScale = d3.scaleSqrt().domain([0, 1]).range([2, cellSize / 2.5]);
 
@@ -82,7 +83,7 @@
 
     const data = simulateConfusionMatrix(labels, 0.75);
 
-    // Y轴标签
+    // Y axis labels (left side)
     svg.selectAll(".row-label")
       .data(labels)
       .enter()
@@ -100,20 +101,20 @@
       .delay((_, i) => i * 30)
       .attr("opacity", 1);
 
-    // X轴标签
+    // X axis labels (bottom, rotated)
     svg.selectAll(".col-label")
       .data(labels)
       .enter()
       .append("text")
       .attr("x", (_, i) => marginLeft + i * cellSize + cellSize / 2)
-      .attr("y", marginTop + chartSize + 60)
+      .attr("y", marginTop + chartSize + 20)
       .attr("fill", "white")
       .attr("text-anchor", "start")
       .attr("alignment-baseline", "middle")
       .style("font-size", "12px")
       .attr("transform", (_, i) => {
         const x = marginLeft + i * cellSize + cellSize / 2;
-        const y = marginTop + chartSize + 60;
+        const y = marginTop + chartSize + 20;
         return `rotate(45, ${x}, ${y})`;
       })
       .attr("opacity", 0)
@@ -123,20 +124,23 @@
       .delay((_, i) => i * 30)
       .attr("opacity", 1);
 
-    // 网格线
+    // Grid lines
     for (let i = 0; i <= cellCount; i++) {
-      const pos = marginTop + i * cellSize;
+      const posY = marginTop + i * cellSize;
+      const posX = marginLeft + i * cellSize;
+
       svg.append("line")
         .attr("x1", marginLeft)
         .attr("x2", marginLeft + chartSize)
-        .attr("y1", pos)
-        .attr("y2", pos)
+        .attr("y1", posY)
+        .attr("y2", posY)
         .attr("stroke", "white")
         .attr("stroke-opacity", 0.1)
         .attr("stroke-width", 1);
+
       svg.append("line")
-        .attr("x1", marginLeft + i * cellSize)
-        .attr("x2", marginLeft + i * cellSize)
+        .attr("x1", posX)
+        .attr("x2", posX)
         .attr("y1", marginTop)
         .attr("y2", marginTop + chartSize)
         .attr("stroke", "white")
@@ -144,7 +148,7 @@
         .attr("stroke-width", 1);
     }
 
-    // 圆点动画
+    // Bubbles
     data.forEach((d, i) => {
       setTimeout(() => {
         const cx = marginLeft + d.col * cellSize + cellSize / 2;
@@ -200,7 +204,7 @@
           .transition()
           .duration(600)
           .delay(200)
-          .attr("r", 0.5); // 白点高亮
+          .attr("r", 0.5);
       }, i * 20);
     });
   </script>
