@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Confusion Matrix Bubble Animation</title>
+  <title>Compact Confusion Matrix</title>
   <script src="https://d3js.org/d3.v6.min.js"></script>
   <style>
     body {
@@ -13,6 +13,8 @@
       margin: 0;
     }
     #viz {
+      width: 100%;
+      max-width: 570px;
       margin: 0 auto;
       overflow: visible;
     }
@@ -40,13 +42,13 @@
     ];
 
     const cellCount = labels.length;
-    const cellSize = 34; // 缩小 15%
-    const marginLeft = 135;
-    const marginTop = 70;
-    const marginBottom = 130;
+    const cellSize = 30;
+    const marginLeft = 115;
+    const marginTop = 55;
+    const marginBottom = 120;
     const chartSize = cellCount * cellSize;
-    const totalWidth = marginLeft + chartSize + 80;
-    const totalHeight = marginTop + chartSize + marginBottom;
+    const totalWidth = marginLeft + chartSize + 40;   // ≈ 570px
+    const totalHeight = marginTop + chartSize + marginBottom; // ≈ 770px
 
     const svg = d3.select("#viz")
       .append("svg")
@@ -62,7 +64,7 @@
       .domain([0, 1])
       .interpolator(t => d3.interpolatePlasma(Math.pow(t, 0.4)));
 
-    const radiusScale = d3.scaleSqrt().domain([0, 1]).range([2, cellSize / 2.5]);
+    const radiusScale = d3.scaleSqrt().domain([0, 1]).range([1.5, cellSize / 2.6]);
 
     function simulateConfusionMatrix(labels, accuracy = 0.75) {
       const matrix = [];
@@ -92,7 +94,7 @@
       .attr("fill", "white")
       .attr("text-anchor", "end")
       .attr("alignment-baseline", "middle")
-      .style("font-size", "11px")
+      .style("font-size", "10px")
       .attr("opacity", 0)
       .text(d => d)
       .transition()
@@ -109,7 +111,7 @@
       .attr("fill", "white")
       .attr("text-anchor", "start")
       .attr("alignment-baseline", "middle")
-      .style("font-size", "11px")
+      .style("font-size", "10px")
       .attr("transform", (_, i) => {
         const x = marginLeft + i * cellSize + cellSize / 2;
         const y = marginTop + chartSize + 20;
