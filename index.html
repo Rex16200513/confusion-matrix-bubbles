@@ -40,10 +40,10 @@
     ];
 
     const cellCount = labels.length;
-    const cellSize = 32; // 缩小 20%
-    const marginLeft = 130;
-    const marginTop = 60;
-    const marginBottom = 120;
+    const cellSize = 34; // 缩小 15%
+    const marginLeft = 135;
+    const marginTop = 70;
+    const marginBottom = 130;
     const chartSize = cellCount * cellSize;
     const totalWidth = marginLeft + chartSize + 80;
     const totalHeight = marginTop + chartSize + marginBottom;
@@ -92,7 +92,7 @@
       .attr("fill", "white")
       .attr("text-anchor", "end")
       .attr("alignment-baseline", "middle")
-      .style("font-size", "10px")
+      .style("font-size", "11px")
       .attr("opacity", 0)
       .text(d => d)
       .transition()
@@ -109,7 +109,7 @@
       .attr("fill", "white")
       .attr("text-anchor", "start")
       .attr("alignment-baseline", "middle")
-      .style("font-size", "10px")
+      .style("font-size", "11px")
       .attr("transform", (_, i) => {
         const x = marginLeft + i * cellSize + cellSize / 2;
         const y = marginTop + chartSize + 20;
