@@ -42,13 +42,13 @@
     ];
 
     const cellCount = labels.length;
-    const cellSize = 30;
-    const marginLeft = 115;
+    const cellSize = 28;
+    const marginLeft = 85;
     const marginTop = 55;
     const marginBottom = 120;
     const chartSize = cellCount * cellSize;
-    const totalWidth = marginLeft + chartSize + 40;   // ≈ 570px
-    const totalHeight = marginTop + chartSize + marginBottom; // ≈ 770px
+    const totalWidth = marginLeft + chartSize + 20;
+    const totalHeight = marginTop + chartSize + marginBottom;
 
     const svg = d3.select("#viz")
       .append("svg")
@@ -89,12 +89,12 @@
       .data(labels)
       .enter()
       .append("text")
-      .attr("x", marginLeft - 10)
+      .attr("x", marginLeft - 8)
       .attr("y", (_, i) => marginTop + i * cellSize + cellSize / 2)
       .attr("fill", "white")
       .attr("text-anchor", "end")
       .attr("alignment-baseline", "middle")
-      .style("font-size", "10px")
+      .style("font-size", "9px")
       .attr("opacity", 0)
       .text(d => d)
       .transition()
@@ -111,11 +111,11 @@
       .attr("fill", "white")
       .attr("text-anchor", "start")
       .attr("alignment-baseline", "middle")
-      .style("font-size", "10px")
+      .style("font-size", "9px")
       .attr("transform", (_, i) => {
         const x = marginLeft + i * cellSize + cellSize / 2;
         const y = marginTop + chartSize + 20;
-        return `rotate(45, ${x}, ${y})`;
+        return `rotate(55, ${x}, ${y})`;
       })
       .attr("opacity", 0)
       .text(d => d)
