@@ -40,12 +40,12 @@
     ];
 
     const cellCount = labels.length;
-    const cellSize = 40;
-    const marginLeft = 160;
-    const marginTop = 100;
-    const marginBottom = 200;
+    const cellSize = 32; // 缩小 20%
+    const marginLeft = 130;
+    const marginTop = 60;
+    const marginBottom = 120;
     const chartSize = cellCount * cellSize;
-    const totalWidth = marginLeft + chartSize + 100;
+    const totalWidth = marginLeft + chartSize + 80;
     const totalHeight = marginTop + chartSize + marginBottom;
 
     const svg = d3.select("#viz")
@@ -60,7 +60,7 @@
 
     const colorScale = d3.scaleSequential()
       .domain([0, 1])
-      .interpolator(t => d3.interpolatePlasma(Math.pow(t, 0.4))); // gamma correction
+      .interpolator(t => d3.interpolatePlasma(Math.pow(t, 0.4)));
 
     const radiusScale = d3.scaleSqrt().domain([0, 1]).range([2, cellSize / 2.5]);
 
@@ -83,25 +83,23 @@
 
     const data = simulateConfusionMatrix(labels, 0.75);
 
-    // Y axis labels (left side)
     svg.selectAll(".row-label")
       .data(labels)
       .enter()
       .append("text")
-      .attr("x", marginLeft - 20)
+      .attr("x", marginLeft - 10)
       .attr("y", (_, i) => marginTop + i * cellSize + cellSize / 2)
       .attr("fill", "white")
       .attr("text-anchor", "end")
       .attr("alignment-baseline", "middle")
-      .style("font-size", "12px")
+      .style("font-size", "10px")
       .attr("opacity", 0)
       .text(d => d)
       .transition()
       .duration(600)
-      .delay((_, i) => i * 30)
+      .delay((_, i) => i * 20)
       .attr("opacity", 1);
 
-    // X axis labels (bottom, rotated)
     svg.selectAll(".col-label")
       .data(labels)
       .enter()
@@ -111,7 +109,7 @@
       .attr("fill", "white")
       .attr("text-anchor", "start")
       .attr("alignment-baseline", "middle")
-      .style("font-size", "12px")
+      .style("font-size", "10px")
       .attr("transform", (_, i) => {
         const x = marginLeft + i * cellSize + cellSize / 2;
         const y = marginTop + chartSize + 20;
@@ -121,26 +119,22 @@
       .text(d => d)
       .transition()
       .duration(600)
-      .delay((_, i) => i * 30)
+      .delay((_, i) => i * 20)
       .attr("opacity", 1);
 
-    // Grid lines
     for (let i = 0; i <= cellCount; i++) {
-      const posY = marginTop + i * cellSize;
-      const posX = marginLeft + i * cellSize;
-
+      const pos = marginTop + i * cellSize;
       svg.append("line")
         .attr("x1", marginLeft)
         .attr("x2", marginLeft + chartSize)
-        .attr("y1", posY)
-        .attr("y2", posY)
+        .attr("y1", pos)
+        .attr("y2", pos)
         .attr("stroke", "white")
         .attr("stroke-opacity", 0.1)
         .attr("stroke-width", 1);
-
       svg.append("line")
-        .attr("x1", posX)
-        .attr("x2", posX)
+        .attr("x1", marginLeft + i * cellSize)
+        .attr("x2", marginLeft + i * cellSize)
         .attr("y1", marginTop)
         .attr("y2", marginTop + chartSize)
         .attr("stroke", "white")
@@ -148,7 +142,6 @@
         .attr("stroke-width", 1);
     }
 
-    // Bubbles
     data.forEach((d, i) => {
       setTimeout(() => {
         const cx = marginLeft + d.col * cellSize + cellSize / 2;
