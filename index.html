@@ -41,14 +41,16 @@
 
     const cellCount = labels.length;
     const cellSize = 40;
-    const margin = 160;
+    const marginTop = 160;
+    const marginLeft = 160;
     const chartSize = cellCount * cellSize;
-    const totalSize = chartSize + margin;
+    const totalWidth = chartSize + marginLeft;
+    const totalHeight = marginTop + chartSize + 120; // 为下方标签腾出空间
 
     const svg = d3.select("#viz")
       .append("svg")
-      .attr("width", totalSize)
-      .attr("height", totalSize + 80)
+      .attr("width", totalWidth)
+      .attr("height", totalHeight)
       .style("overflow", "visible");
 
     const tooltip = d3.select("body")
@@ -80,12 +82,13 @@
 
     const data = simulateConfusionMatrix(labels, 0.75);
 
+    // Y轴标签
     svg.selectAll(".row-label")
       .data(labels)
       .enter()
       .append("text")
-      .attr("x", margin / 2 - 30)
-      .attr("y", (_, i) => margin / 2 + i * cellSize + cellSize / 2)
+      .attr("x", marginLeft - 20)
+      .attr("y", (_, i) => marginTop + i * cellSize + cellSize / 2)
       .attr("fill", "white")
       .attr("text-anchor", "end")
       .attr("alignment-baseline", "middle")
@@ -97,19 +100,20 @@
       .delay((_, i) => i * 30)
       .attr("opacity", 1);
 
+    // X轴标签
     svg.selectAll(".col-label")
       .data(labels)
       .enter()
       .append("text")
-      .attr("x", (_, i) => margin / 2 + i * cellSize + cellSize / 2)
-      .attr("y", margin / 2 + chartSize + 20)
+      .attr("x", (_, i) => marginLeft + i * cellSize + cellSize / 2)
+      .attr("y", marginTop + chartSize + 60)
       .attr("fill", "white")
       .attr("text-anchor", "start")
       .attr("alignment-baseline", "middle")
       .style("font-size", "12px")
       .attr("transform", (_, i) => {
-        const x = margin / 2 + i * cellSize + cellSize / 2;
-        const y = margin / 2 + chartSize + 20;
+        const x = marginLeft + i * cellSize + cellSize / 2;
+        const y = marginTop + chartSize + 60;
         return `rotate(45, ${x}, ${y})`;
       })
       .attr("opacity", 0)
@@ -119,30 +123,32 @@
       .delay((_, i) => i * 30)
       .attr("opacity", 1);
 
+    // 网格线
     for (let i = 0; i <= cellCount; i++) {
-      const pos = margin / 2 + i * cellSize;
+      const pos = marginTop + i * cellSize;
       svg.append("line")
-        .attr("x1", margin / 2)
-        .attr("x2", margin / 2 + chartSize)
+        .attr("x1", marginLeft)
+        .attr("x2", marginLeft + chartSize)
         .attr("y1", pos)
         .attr("y2", pos)
         .attr("stroke", "white")
         .attr("stroke-opacity", 0.1)
         .attr("stroke-width", 1);
       svg.append("line")
-        .attr("x1", pos)
-        .attr("x2", pos)
-        .attr("y1", margin / 2)
-        .attr("y2", margin / 2 + chartSize)
+        .attr("x1", marginLeft + i * cellSize)
+        .attr("x2", marginLeft + i * cellSize)
+        .attr("y1", marginTop)
+        .attr("y2", marginTop + chartSize)
         .attr("stroke", "white")
         .attr("stroke-opacity", 0.1)
         .attr("stroke-width", 1);
     }
 
+    // 圆点动画
     data.forEach((d, i) => {
       setTimeout(() => {
-        const cx = margin / 2 + d.col * cellSize + cellSize / 2;
-        const cy = margin / 2 + d.row * cellSize + cellSize / 2;
+        const cx = marginLeft + d.col * cellSize + cellSize / 2;
+        const cy = marginTop + d.row * cellSize + cellSize / 2;
         const r = radiusScale(d.value);
 
         svg.append("circle")
@@ -194,7 +200,7 @@
           .transition()
           .duration(600)
           .delay(200)
-          .attr("r", 0.5);
+          .attr("r", 0.5); // 白点高亮
       }, i * 20);
     });
   </script>
