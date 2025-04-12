@@ -3,14 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Compact Confusion Matrix</title>
+  <title>Confusion Matrix Bubble Animation</title>
   <script src="https://d3js.org/d3.v6.min.js"></script>
   <style>
     body {
-      background-color: #121212;
+      background-color: transparent;
       color: white;
       font-family: Arial, sans-serif;
       margin: 0;
+      padding: 0;
+      overflow: hidden;
     }
     #viz {
       width: 100%;
@@ -41,20 +43,23 @@
       "Walking·Strolling", "Water·Winter Activities", "Wildlife watching", "Yoga·Dancing"
     ];
 
+    const scaleFactor = 0.75; // 缩小比例
     const cellCount = labels.length;
-    const cellSize = 28;
-    const marginLeft = 85;
-    const marginTop = 55;
-    const marginBottom = 120;
+    const cellSize = 40 * scaleFactor;
+    const marginLeft = 130 * scaleFactor;
+    const marginBottom = 130 * scaleFactor;
+    const marginTop = 40 * scaleFactor;
+    const marginRight = 40 * scaleFactor;
     const chartSize = cellCount * cellSize;
-    const totalWidth = marginLeft + chartSize + 20;
-    const totalHeight = marginTop + chartSize + marginBottom;
+    const svgWidth = chartSize + marginLeft + marginRight;
+    const svgHeight = chartSize + marginTop + marginBottom;
 
     const svg = d3.select("#viz")
       .append("svg")
-      .attr("width", totalWidth)
-      .attr("height", totalHeight)
-      .style("overflow", "visible");
+      .attr("width", svgWidth)
+      .attr("height", svgHeight)
+      .style("overflow", "visible")
+      .style("background", "none");
 
     const tooltip = d3.select("body")
       .append("div")
@@ -64,19 +69,16 @@
       .domain([0, 1])
       .interpolator(t => d3.interpolatePlasma(Math.pow(t, 0.4)));
 
-    const radiusScale = d3.scaleSqrt().domain([0, 1]).range([1.5, cellSize / 2.6]);
+    const radiusScale = d3.scaleSqrt().domain([0, 1]).range([2, cellSize / 2.5]);
 
     function simulateConfusionMatrix(labels, accuracy = 0.75) {
       const matrix = [];
       const len = labels.length;
       for (let i = 0; i < len; i++) {
         for (let j = 0; j < len; j++) {
-          let value;
-          if (i === j) {
-            value = accuracy + Math.random() * (1 - accuracy) * 0.2;
-          } else {
-            value = (1 - accuracy) * (Math.random() * 0.8);
-          }
+          let value = i === j
+            ? accuracy + Math.random() * (1 - accuracy) * 0.2
+            : (1 - accuracy) * (Math.random() * 0.8);
           matrix.push({ row: i, col: j, value: +value.toFixed(2) });
         }
       }
@@ -89,12 +91,12 @@
       .data(labels)
       .enter()
       .append("text")
-      .attr("x", marginLeft - 8)
+      .attr("x", marginLeft - 10)
       .attr("y", (_, i) => marginTop + i * cellSize + cellSize / 2)
       .attr("fill", "white")
       .attr("text-anchor", "end")
       .attr("alignment-baseline", "middle")
-      .style("font-size", "9px")
+      .style("font-size", "10px")
       .attr("opacity", 0)
       .text(d => d)
       .transition()
@@ -107,15 +109,15 @@
       .enter()
       .append("text")
       .attr("x", (_, i) => marginLeft + i * cellSize + cellSize / 2)
-      .attr("y", marginTop + chartSize + 20)
+      .attr("y", marginTop + chartSize + 8)
       .attr("fill", "white")
       .attr("text-anchor", "start")
       .attr("alignment-baseline", "middle")
-      .style("font-size", "9px")
+      .style("font-size", "10px")
       .attr("transform", (_, i) => {
         const x = marginLeft + i * cellSize + cellSize / 2;
-        const y = marginTop + chartSize + 20;
-        return `rotate(55, ${x}, ${y})`;
+        const y = marginTop + chartSize + 8;
+        return `rotate(45, ${x}, ${y})`;
       })
       .attr("opacity", 0)
       .text(d => d)
@@ -200,7 +202,7 @@
           .duration(600)
           .delay(200)
           .attr("r", 0.5);
-      }, i * 20);
+      }, i * 15);
     });
   </script>
 </body>
